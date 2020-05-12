@@ -1,21 +1,77 @@
 package com.mistong.jstudy
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
-import dalvik.system.DexClassLoader
-import dalvik.system.PathClassLoader
-import java.lang.Exception
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.view.LayoutInflaterCompat
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private var count = 0
     private val myLock = MyLock()
     override fun onCreate(savedInstanceState: Bundle?) {
+        LayoutInflaterCompat.setFactory2(layoutInflater, object : LayoutInflater.Factory2 {
+            override fun onCreateView(
+                parent: View?,
+                name: String,
+                context: Context,
+                attrs: AttributeSet
+            ): View? {
+                val view = delegate.createView(parent, name, context, attrs)
+                when (view) {
+                    is AppCompatTextView -> {
+                        view.text = "去你妈的"
+                    }
+                }
+                return view
+            }
+
+            override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+                return onCreateView(null, name, context, attrs)
+            }
+
+        })
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val classLoader = DexClassLoader("", "", null, classLoader)
-        val pathClassLoader = PathClassLoader("", "", classLoader)
+        tv.setOnClickListener {
+            if (count > 0) {
+                Toast.makeText(this, "你好小米", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "你好小万", Toast.LENGTH_SHORT).show()
+            }
+        }
+        
+        threadPool()
+    }
+
+    private fun threadPool() {
+        val threadPool = ThreadPoolExecutor(
+            2, 300, 60L, TimeUnit.SECONDS,
+            LinkedBlockingQueue(2),
+            Executors.defaultThreadFactory(),
+            ThreadPoolExecutor.DiscardPolicy()
+        )
+
+        threadPool.execute {
+            try {
+                Thread.sleep(2000)
+            } catch (e: Exception) {
+
+            }
+
+        }
+        Log.e("线程池", "等待队列中有${threadPool.queue.size}个")
     }
 
     private fun testThread() {

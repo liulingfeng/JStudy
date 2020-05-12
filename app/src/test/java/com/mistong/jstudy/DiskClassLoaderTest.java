@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
  */
 public class DiskClassLoaderTest {
     @Test
+    @SuppressWarnings("unchecked")
     public void testClassLoader() {
         DiskClassLoader diskClassLoader = new DiskClassLoader("file:///Users/liuxiaoshuai/desktop/");
         try {
@@ -22,7 +23,7 @@ public class DiskClassLoaderTest {
                 method.invoke(obj);
             }
         } catch (Exception e) {
-
+            System.out.println("没找到类");
         }
     }
 }

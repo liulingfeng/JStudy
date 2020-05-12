@@ -1,6 +1,7 @@
 package com.mistong.jstudy;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author liuxiaoshuai
@@ -12,11 +13,11 @@ public class MyLock {
     private Sync sync = new Sync();
 
     public void lock() {
-        sync.acquire(0);
+        sync.acquire(1);
     }
 
     public void unlock() {
-        sync.release(0);
+        sync.release(1);
     }
 
     static class Sync extends AbstractQueuedSynchronizer {
@@ -29,6 +30,12 @@ public class MyLock {
         protected boolean tryRelease(int arg) {
             setState(0);
             return true;
+        }
+
+        //是否独占资源
+        @Override
+        protected boolean isHeldExclusively() {
+            return getState() == 1;
         }
     }
 }

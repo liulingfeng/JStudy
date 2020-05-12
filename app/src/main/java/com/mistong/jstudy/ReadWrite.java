@@ -24,7 +24,7 @@ public class ReadWrite {
                     Thread.sleep(1000);
                     Log.e("德玛", Thread.currentThread().getName() + "---> Number is " + number);
 
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     lock.readLock().unlock();
